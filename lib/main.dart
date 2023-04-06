@@ -1,13 +1,10 @@
 import 'package:database/view/notes_view.dart';
-
 import 'constant/route.dart';
 import 'view/login_view.dart';
 import 'view/verify_view.dart';
-
 import'package:database/view/register_view.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-
 import  'package:firebase_core/firebase_core.dart';
 
 
@@ -48,7 +45,7 @@ class homepage extends StatelessWidget {
       builder: (context, snapshot){
          switch(snapshot.connectionState){
           case ConnectionState.done:
-         return login_view();
+         return const login_view();
          
          
           default:
