@@ -1,11 +1,14 @@
 
-import 'package:database/view/notes_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
+
+
+
+import 'package:database/services/auth/auth_exceptions.dart';
+import 'package:database/view/dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../firebase_options.dart';
-import 'dialog.dart';
+import 'package:database/services/auth/auth_service.dart';
+
+
 
 class login_view extends StatefulWidget {
   const login_view({super.key});
@@ -40,11 +43,8 @@ class _login_viewState extends State<login_view> {
       
     ),
     body: FutureBuilder(
-      future:   Firebase.initializeApp(
-          
-                   options:  DefaultFirebaseOptions.currentPlatform,
-          ),
-      builder: (context, snapshot) {
+      future:   AuthService.firebase().initialize(),      
+      builder: (context, snapshot)  {
         switch(snapshot.connectionState){
           
       
@@ -59,7 +59,7 @@ class _login_viewState extends State<login_view> {
             autocorrect: false,
             enableSuggestions: false,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "enter the email id"
             ),
           ),
@@ -68,57 +68,41 @@ class _login_viewState extends State<login_view> {
             autocorrect: false,
             obscureText: true,
             enableSuggestions: false,
-            decoration:InputDecoration(
+            decoration:const InputDecoration(
               hintText: "enter the password"
             ),
           ),
          Column(
             children:[
           TextButton(onPressed:() async{
-            try{ 
-              
-              final email=_email.text;
-              final password=_password.text;
+            final user =AuthService.firebase();
+            final email=_email.text;
+            final password=_password.text;
+            try{
+        await user.Login(email: email, password: password);
+        print(user.currentUser?.isEmailVerified);
+          if(user.currentUser?.isEmailVerified??false){
+            await showerrordialog(context,"you have logged in succesully\nnow enjoy the kinky photos\n", "Login Successful");
+              Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
+          }
+          else{  user.SendEmailVerification();
+                Navigator.of(context).pushNamedAndRemoveUntil('/verify/', (route) => false);
              
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: email, 
-            password: password
-
-            );
-            final user =FirebaseAuth.instance.currentUser ;
-        
-           final l=user?.emailVerified??false;
+          }
+            }
+            on UserNotFoundAuthException {
+            await showerrordialog(context, "user is not present in data base", "uwu!! error occured!!");
+            }
+            on WrongPasswordAuthException{
+              await showerrordialog(context, "password is incorrect", "uwu!! error occured!!");
+            }
+            on InvalidEmailAuthException{
+              await showerrordialog(context, "the email id is invalid", "uwu!! error occured!!");
+            }
+            on GenericAuthException{
+             await showerrordialog(context, "something went wrong", "uwu!! error occured!!");
+            }
            
-          
-            if(l==false){
-            final user=FirebaseAuth.instance.currentUser;     
-              user?.sendEmailVerification(); 
-              await showerrordialog(context,"verifivcation email has been sent to our id\nbe sure to check the sapm folder\n","Verification Email Sent");
-           Navigator.of(context).pushNamed('/verify/');
-            }
-            else{
-               Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
-            };
-             }
-          on FirebaseAuthException  catch (e){
-            
-            switch(e.code){
-             case "wrong-password":
-             await showerrordialog(context,'wrong password',"woah bhosadike");
-             break;
-             case "invalid-email":
-             await showerrordialog(context,'invalid email',"woah bhosadike");
-             break;
-          
-              case "user-not-found":
-            await showerrordialog(context,'user doesnt exist',"woah bhosadike");
-             break;
-
-              default: await showerrordialog(context,'something went wrong',"woah bhosadike");
-            }
-            } 
-             
-                 
           },
           child: const Text("Login"),
           ),

@@ -1,3 +1,4 @@
+import 'package:database/services/auth/auth_service.dart';
 import 'package:database/view/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,7 +15,7 @@ class verify_view extends StatefulWidget {
 }
 
 class _verify_viewState extends State<verify_view> {
- 
+
   Widget build(BuildContext context) {
    
     return  Scaffold(appBar: AppBar(
@@ -23,10 +24,7 @@ class _verify_viewState extends State<verify_view> {
     ),
     body: FutureBuilder(
       future:    
-      Firebase.initializeApp(
-                  
-                   options:  DefaultFirebaseOptions.currentPlatform,
-          ),
+   AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         
         switch(snapshot.connectionState){
@@ -45,17 +43,18 @@ class _verify_viewState extends State<verify_view> {
           Center(
             child:
              TextButton(onPressed: ()async{
-               final user=FirebaseAuth.instance.currentUser;     
-              user?.sendEmailVerification(); 
-              final l =user?.emailVerified??false;
-              user?.reload();
-              if(l==true){
+             
+            final user= AuthService.firebase();
+              
+              if(user.currentUser?.isEmailVerified??false==true){
                 await showerrordialog(context, "you have verified sucessfully\n", "Verification Successful");
-                Navigator.pop(context);
+             Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
               }
-            await showerrordialog(context, "Verification email has been sent\n","Email Sent");
-          }, 
-          child:Text("Resend verification email") ))
+              else{
+            await user.SendEmailVerification();
+            await showerrordialog(context, " Verification email has been sent\n","Email Sent");
+             }}, 
+          child:Text("resend verification") ))
         ],
       
       );

@@ -1,7 +1,8 @@
 
 
 import 'package:database/constant/route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:database/services/auth/auth_service.dart';
+
 import 'package:flutter/material.dart';
 import 'dialog.dart';
 
@@ -25,8 +26,8 @@ class _notes_viewState extends State<notes_view> {
         case menuaction.logout:
         final what=await showlogoutdialog(context);
         if(what){
-          await FirebaseAuth.instance.signOut();      
          
+           AuthService.firebase().Logout();
            Navigator.of(context).pushNamedAndRemoveUntil(login, (route) => false);
            }
         break;
@@ -41,7 +42,6 @@ class _notes_viewState extends State<notes_view> {
         ]),
         body:Column(
         children:[ const Text("thjis is notes"),
-       
         ]
       )
       
