@@ -55,6 +55,7 @@ class FirebaseAuthProvider implements AuthProvider {
    }
   }
   on FirebaseAuthException catch(e){
+    
       switch(e.code){
              case "wrong-password":
              throw WrongPasswordAuthException();
