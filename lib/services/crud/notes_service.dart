@@ -8,6 +8,20 @@ import 'package:sqflite/sqflite.dart' ;
 class NotesService{
 Database ? _db;
 
+Future<DatabaseNotes> getnote({required int id})async{
+  final db = _getdatabaseorthrow();
+  final l  = await db.query("notes",where:"id=?",whereArgs: [id]);
+  if(l.isEmpty){
+    throw CouldNotFindNote;
+  }
+  return DatabaseNotes.fromnote({
+    "id":l[0]["id"],
+    "text":l[0]["text"],
+    "user_id":l[0]["user_id"],
+
+  });
+}
+
 Future<void> deletenote({required int id})async{
   final db =_getdatabaseorthrow();
   final i=await db.delete("notes",where:"id=?",whereArgs: [id]);
