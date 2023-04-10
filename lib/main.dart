@@ -1,4 +1,6 @@
+import 'package:database/view/newnote_view.dart';
 import 'package:database/view/notes_view.dart';
+import 'package:path/path.dart';
 import 'constant/route.dart';
 import 'view/login_view.dart';
 import 'view/verify_view.dart';
@@ -22,7 +24,8 @@ void main() {
 
         verify:(context) => const verify_view(),
         register:(context) => const register_view(),
-        notes:(context) => const notes_view()
+        notes:(context) => const notes_view(),
+        newnote:(context)=>const newnote_view(),
       },
     ),);
 }
@@ -49,7 +52,7 @@ class homepage extends StatelessWidget {
          
          
           default:
-          return Center(child: Text("loading..."),);
+          return const Center(child: Text("loading..."),);
         
          
         }
