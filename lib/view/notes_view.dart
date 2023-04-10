@@ -1,13 +1,11 @@
 
-
 import 'package:database/constant/route.dart';
 import 'package:database/services/auth/auth_service.dart';
 import 'package:database/services/crud/notes_service.dart';
 import 'package:database/view/newnote_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
+
 import 'dialog.dart';
 
 class notes_view extends StatefulWidget {
@@ -38,7 +36,7 @@ late final String email;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Your Notes"),
+      appBar: AppBar(title: const Text("Your Notes"),
       actions: [
         IconButton(onPressed: (){
          Navigator.push(context, MaterialPageRoute(builder: (context)=>newnote_view()));
@@ -57,7 +55,7 @@ late final String email;
       
        },itemBuilder: (context){
         return [
-        PopupMenuItem<menuaction>(value:menuaction.logout,child: Text("logout"))
+       const  PopupMenuItem<menuaction>(value:menuaction.logout,child: Text("logout"))
         ];
        })
 
@@ -80,39 +78,49 @@ late final String email;
                    
                   case ConnectionState.active:
                   if(snapshot.hasData){
-                    print("activated");
+                  
                     
                   final list=snapshot.data as List<DatabaseNotes>;
-                  final l =list.length;
-                  print(l);
+                 
+                  
                     return ListView.builder(
                       itemCount:list.length ,
                       itemBuilder: (context,index){
                         if(index%2==0){
                           return ListTile(title: Text(list[index].note,
-                          maxLines: 1,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,),
-                          tileColor:Colors.yellow,
-                          trailing:
-                           IconButton(onPressed: ()async{
-                           
+                        
+                          ),
+                          tileColor:const Color.fromARGB(255, 60, 6, 209),
+                     
+                          trailing:Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [IconButton(onPressed: ()async{
+                           final message = await showupdatedialog(context,"type your edited message below","Update the message" ,list[index].note);
+                            await _access.updateNotes(note: list[index], text: message!);
+                          },icon: const Icon(Icons.edit),),
+                          IconButton(onPressed: ()async{
+                          
                             await _access.deletenote(id: list[index].id);
-                          },icon: Icon(Icons.delete),),
-                          iconColor: Colors.red,
-                       
+                          },icon: const Icon(Icons.delete),)],) ,
+                          iconColor: const Color.fromARGB(222, 85, 234, 229),
+                          
                           );
                       }
                       
                       else{
                          return ListTile(title: Text(list[index].note,
-                          maxLines: 1,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,),
+                          ),
                           tileColor:Colors.purple,
-                          trailing: IconButton(onPressed: ()async{
-                                await _access.deletenote(id: list[index].id);
-                          },icon: Icon(Icons.delete),),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [IconButton(onPressed: ()async{
+                           
+                              final message = await showupdatedialog(context,"type your edited message below","Update the message" ,list[index].note);
+                            await _access.updateNotes(note: list[index], text: message!);
+                          },icon: const Icon(Icons.edit),),
+                          IconButton(onPressed: ()async{
+                           await _access.deletenote(id: list[index].id);
+                          },icon: const Icon(Icons.delete),)],),
                           iconColor: Colors.red,
                           
                           );
@@ -129,15 +137,12 @@ late final String email;
                 }));
                 
               default:
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           }),
         )
       
-      ,);
-      
-    
-    
+      ,);   
   }
 }
 

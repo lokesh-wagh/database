@@ -15,18 +15,20 @@ import 'crud_exceptions.dart';
 class NotesService{
 Database ? _db;
 List<DatabaseNotes> _notes=[];
+late final _notestreamcontroller;
 NotesService._private(){
    _notestreamcontroller= StreamController<List<DatabaseNotes>>.broadcast(
     onListen: (){
       _notestreamcontroller.sink.add(_notes);
     }
    );
+
    
 }
 static final _shared=NotesService._private();
 factory NotesService()=>_shared;
 
-late final _notestreamcontroller;
+
 Stream<List<DatabaseNotes>> get allnotes=>_notestreamcontroller.stream;
 
 

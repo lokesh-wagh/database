@@ -38,11 +38,11 @@ class _login_viewState extends State<login_view> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(
-      title: Text("lauda"),
-      
-    ),
+    return Scaffold(
+      appBar: AppBar(title: 
+      const Text("login page"),),
     body: FutureBuilder(
+      
       future:   AuthService.firebase().initialize(),      
       builder: (context, snapshot)  {
         switch(snapshot.connectionState){
@@ -82,7 +82,7 @@ class _login_viewState extends State<login_view> {
         await user.Login(email: email, password: password);
       
           if(user.currentUser?.isEmailVerified??false){
-            await showerrordialog(context,"you have logged in succesully\nnow enjoy the kinky photos\n", "Login Successful");
+            await showerrordialog(context,"you have logged in succesully\npost it page\n", "Login Successful");
               Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
           }
           else{  user.SendEmailVerification();
@@ -91,16 +91,16 @@ class _login_viewState extends State<login_view> {
           }
             }
             on UserNotFoundAuthException {
-            await showerrordialog(context, "user is not present in data base", "uwu!! error occured!!");
+            await showerrordialog(context, "user is not present in data base", "oops!! error occured!!");
             }
             on WrongPasswordAuthException{
-              await showerrordialog(context, "password is incorrect", "uwu!! error occured!!");
+              await showerrordialog(context, "password is incorrect", "oops!! error occured!!");
             }
             on InvalidEmailAuthException{
-              await showerrordialog(context, "the email id is invalid", "uwu!! error occured!!");
+              await showerrordialog(context, "the email id is invalid", "oops!! error occured!!");
             }
             on GenericAuthException{
-             await showerrordialog(context, "something went wrong", "uwu!! error occured!!");
+             await showerrordialog(context, "something went wrong", "oops!! error occured!!");
             }
            
           },
@@ -108,7 +108,7 @@ class _login_viewState extends State<login_view> {
           ),
           TextButton(onPressed: (){
             Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
-          },child: Text("not registered yet?"),),
+          },child: const Text("not registered yet?"),),
        ])
         ],
       
