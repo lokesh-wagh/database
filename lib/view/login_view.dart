@@ -80,7 +80,7 @@ class _login_viewState extends State<login_view> {
             final password=_password.text;
             try{
         await user.Login(email: email, password: password);
-        print(user.currentUser?.isEmailVerified);
+      
           if(user.currentUser?.isEmailVerified??false){
             await showerrordialog(context,"you have logged in succesully\nnow enjoy the kinky photos\n", "Login Successful");
               Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
