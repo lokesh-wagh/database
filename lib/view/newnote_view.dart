@@ -1,6 +1,7 @@
-import 'package:database/constant/route.dart';
+
 import 'package:database/services/auth/auth_service.dart';
 import 'package:database/services/crud/notes_service.dart';
+
 import 'package:flutter/material.dart';
 
 
@@ -35,6 +36,7 @@ class _newnote_viewState extends State<newnote_view> {
 
 
   void _deleteonexiting()async{
+    
     final note=_note;
     if(_newnote.text.toString()==""&&note!=null){
     await _access.deletenote(id: _note?.id);
@@ -68,6 +70,7 @@ _newnote.addListener(_listenerfunction);
   
   @override
   void dispose() {
+    
     _updatenotewhentextfieldchange();
     _deleteonexiting();
    print ("$_note");
@@ -77,7 +80,7 @@ _newnote.addListener(_listenerfunction);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text("Add New Notes"),
+    return Scaffold(appBar: AppBar(title: const Text("Add New Notes"),
     ),
     body: FutureBuilder(
       future: create_a_newnote(),
@@ -93,7 +96,9 @@ _newnote.addListener(_listenerfunction);
               children:[ TextField(controller: _newnote,
             decoration: InputDecoration(hintText: "enter your note"),
             maxLines: null,keyboardType: TextInputType.multiline,),
-            TextButton(onPressed: _updatenotewhentextfieldchange, child: Text("add")),
+            TextButton(onPressed: (){_updatenotewhentextfieldchange
+            ;
+            Navigator.pop(context);}, child: Text("add")),
         ]);
           default:
           return const CircularProgressIndicator();
